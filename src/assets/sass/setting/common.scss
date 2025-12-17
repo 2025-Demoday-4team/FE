@@ -1,0 +1,33 @@
+button,
+a {
+    cursor: pointer;
+    background-color: var(--none);
+}
+
+body {
+    background-color: var(--black);
+}
+
+.container {
+    overflow-x: hidden;
+    width: 100%;
+    margin: 0 auto;
+    background-color: var(--body);
+    min-width: 393px;
+    max-width: 420px;
+    height: 100vh;
+    min-height: 852px;
+    padding-top: 60px;
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+.none {
+    display: none !important;
+}
+
+input {
+    outline: none;
+}
