@@ -1,12 +1,12 @@
-import { useState } from 'react'
+import { Routes, Route } from "react-router-dom";
+import MyFunding from "./components/mainhome/MyFunding";
 
 function App() {
   return (
-    <div>
-      Demoday Start
-    </div>
+    <Routes>
+      <Route path="/myfunding" element={<MyFunding />} />
+    </Routes>
   );
 }
 
 export default App;
-

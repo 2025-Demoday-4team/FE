@@ -1,0 +1,43 @@
+.nav_wrap {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+
+  width: 100%;
+  min-width: 393px;
+  max-width: 420px;
+  height: 69px;
+
+  background-color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 0 55px;
+  box-sizing: border-box;
+  border-top: 1px solid #e0e0e0;
+  z-index: 9999;
+}
+
+.nav_item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+
+  text-decoration: none;
+  color: #000;
+}
+
+.nav_item.active {
+  color: #92455A;
+}
+
+.nav_icon {
+  width: 20px;
+  height: 20px;
+}
+
+.nav_p {
+  font-size: 7px;
+}
