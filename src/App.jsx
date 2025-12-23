@@ -5,6 +5,7 @@ import FundingDetail from "./components/mainhome/FundingDetail";
 import FundingGuest from './components/mainhome/FundingGuest'
 import EnterPage from "./components/enterpage/EnterPage";
 import Login from "./components/login/Login"
+import Prologue from "./components/enterpage/Prologue";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
       <Route path="/funding/guest" element={<FundingGuest />} />
       <Route path="/enterpage" element={<EnterPage/>}/>
       <Route path="/login" element={<Login/>}/>
+      <Route path="/prologue" element={<Prologue/>}/>
     </Routes>
   );
 }
