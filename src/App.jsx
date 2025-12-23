@@ -1,12 +1,20 @@
-import { useState } from 'react'
+import { Routes, Route, Navigate } from "react-router-dom";
+import MyFunding from "./components/mainhome/MyFunding";
+import MyFundingCompleted from "./components/mainhome/MyFundingCompleted";
+import FundingDetail from "./components/mainhome/FundingDetail";
+import FundingGuest from './components/mainhome/FundingGuest'
 
 function App() {
   return (
-    <div>
-      Demoday Start
-    </div>
+    <Routes>
+      <Route path="/" element={<Navigate to="/myfunding" replace />} />
+
+      <Route path="/myfunding" element={<MyFunding />} />
+      <Route path="/myfunding/completed" element={<MyFundingCompleted />} />
+      <Route path="/funding/:id" element={<FundingDetail />} />
+      <Route path="/funding/guest" element={<FundingGuest />} />
+    </Routes>
   );
 }
 
 export default App;
-
