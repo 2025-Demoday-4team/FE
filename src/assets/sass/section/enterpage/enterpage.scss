@@ -1,0 +1,17 @@
+.container.enterpage{
+    background-color: #92455A;
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    
+    .logo{
+        width:170px;
+        height:45px;
+        margin-bottom:20px;
+    }
+    .title{
+        color:white;
+        font-weight: 300;
+    }
+}
