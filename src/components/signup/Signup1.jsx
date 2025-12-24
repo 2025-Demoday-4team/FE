@@ -17,9 +17,20 @@ const Signup1 = () => {
   const [isBankOpen, setIsBankOpen] = useState(false);
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
+  const [email, setEmail] = useState('');
+  const [nickname, setNickname] = useState('');
+  const [account, setAccount] = useState('');
 
-  const isPasswordMismatch =passwordConfirm.length > 0 && password !== passwordConfirm;
+  const isPasswordMismatch = passwordConfirm.length > 0 && password !== passwordConfirm;
 
+  const isFormValid =
+    email &&
+    password &&
+    passwordConfirm &&
+    !isPasswordMismatch &&
+    nickname &&
+    account &&
+    bank;
 
 
   const handleSelectBank = (name) => {
@@ -38,15 +49,15 @@ const Signup1 = () => {
             <p>위시리스트 펀딩을 만들기 위해<br/>꼭 필요한 정보만 수집해요.</p>
         </div>
         <div className="input_container1">
-            <input className="inputEmail"  placeholder="이메일을 입력하세요."/>
+            <input className="inputEmail"  placeholder="이메일을 입력하세요." value={email} onChange={(e) => setEmail(e.target.value)}/>
             <input className='inputPassword1' type="password" placeholder="비밀번호를 입력하세요." value={password} onChange={(e) => setPassword(e.target.value)}/>
             <input className='inputPassword2' type="password" placeholder='비밀번호를 한 번 더 입력하세요.' value={passwordConfirm} onChange={(e) => setPasswordConfirm(e.target.value)}/>
             {isPasswordMismatch && (<p className="password_error">비밀번호가 달라요.</p>)}
 
         </div>
         <div className="input_container2">
-            <input className="inputNickname" type="text" placeholder='닉네임을 입력하세요.'/>
-            <input className="inputAccount" type="text" placeholder='계좌번호를 입력하세요.'/>
+            <input className="inputNickname" value={nickname} onChange={(e) => setNickname(e.target.value)} type="text" placeholder='닉네임을 입력하세요.'/>
+            <input className="inputAccount" value={account} onChange={(e) => setAccount(e.target.value)} type="text" placeholder='계좌번호를 입력하세요.'/>
             <div className="bank_select">
               <input
                 className="inputBank"
@@ -72,6 +83,14 @@ const Signup1 = () => {
               )}
             </div>
         </div>
+      </div>
+      <div className="bottom">
+        <button
+        disabled={!isFormValid}
+       className={isFormValid ? 'active' : 'disabled'}
+       >
+        완료
+        </button>
       </div>
     </div>
   )

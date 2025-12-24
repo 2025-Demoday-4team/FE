@@ -24,6 +24,7 @@
             flex-direction: column;
             gap:10px;
             margin-bottom:50px;
+            padding-top:30px;
 
             h3{
                 font-size:20px;
@@ -48,6 +49,7 @@
                 border-radius: 10px;
                 font-size:19px;
                 padding-left:20px;
+                padding-right:10px;
             }
             .inputPassword1{
                 border:1px solid #C2C2C2;
@@ -56,6 +58,7 @@
                 border-radius: 10px;
                 font-size:19px;
                 padding-left:20px;
+                padding-right:10px;
             }
             .inputPassword2{
                 border:1px solid #C2C2C2;
@@ -64,6 +67,7 @@
                 border-radius: 10px;
                 font-size:19px;
                 padding-left:20px;
+                padding-right:10px;
             }
             .password_error{
                 color:#FF0000;
@@ -87,6 +91,7 @@
                 border-radius: 10px;
                 font-size:19px;
                 padding-left:20px;
+                padding-right:10px;
             }
             .inputAccount{
                 border:1px solid #C2C2C2;
@@ -95,6 +100,7 @@
                 border-radius: 10px;
                 font-size:19px;
                 padding-left:20px;
+                padding-right:10px;
             }
             .inputBank{
                 border:1px solid #C2C2C2;
@@ -103,6 +109,7 @@
                 border-radius: 10px;
                 font-size:19px;
                 padding-left:20px;
+                padding-right:10px;
             }
             .bank_dropdown{
                 border:1px solid #C2C2C2;
@@ -121,4 +128,33 @@
             }
         }
     }
+    .bottom {
+        display: flex;
+        justify-content: center;
+        margin-top: 40px;
+
+        button {
+            width: 287px;
+            height: 58px;
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+            transition: background-color 0.2s;
+        }
+
+        button.disabled {
+            background-color: #c2c2c2;
+            cursor: not-allowed;
+        }
+
+        button.active {
+            background-color: #92455a;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            pointer-events: none; // 클릭 방지
+        }
+    }
+
 }
