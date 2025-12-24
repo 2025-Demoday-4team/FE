@@ -47,7 +47,6 @@
                 height:58px;
                 border-radius: 10px;
                 font-size:19px;
-                color:#C2C2C2;
                 padding-left:20px;
             }
             .inputPassword1{
@@ -56,7 +55,6 @@
                 height:58px;
                 border-radius: 10px;
                 font-size:19px;
-                color:#C2C2C2;
                 padding-left:20px;
             }
             .inputPassword2{
@@ -65,8 +63,15 @@
                 height:58px;
                 border-radius: 10px;
                 font-size:19px;
-                color:#C2C2C2;
                 padding-left:20px;
+            }
+            .password_error{
+                color:#FF0000;
+                font-size:12px;
+                display:flex;
+                justify-content: flex-end;
+                font-weight:500;
+
             }
         }
 
@@ -81,7 +86,6 @@
                 height:58px;
                 border-radius: 10px;
                 font-size:19px;
-                color:#C2C2C2;
                 padding-left:20px;
             }
             .inputAccount{
@@ -90,7 +94,6 @@
                 height:58px;
                 border-radius: 10px;
                 font-size:19px;
-                color:#C2C2C2;
                 padding-left:20px;
             }
             .inputBank{
@@ -99,7 +102,6 @@
                 height:58px;
                 border-radius: 10px;
                 font-size:19px;
-                color:#C2C2C2;
                 padding-left:20px;
             }
             .bank_dropdown{

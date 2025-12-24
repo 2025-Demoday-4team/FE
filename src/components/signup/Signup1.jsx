@@ -2,7 +2,6 @@ import React from 'react'
 import arrow from "../../assets/img/arrow.png"
 import "../../assets/sass/section/signup/signup1.scss"
 import { useState } from 'react';
-import { useRef } from 'react';
 
 const BANKS = [
   "KB국민은행",
@@ -16,6 +15,12 @@ const BANKS = [
 const Signup1 = () => {
   const [bank, setBank] = useState('');
   const [isBankOpen, setIsBankOpen] = useState(false);
+  const [password, setPassword] = useState('');
+  const [passwordConfirm, setPasswordConfirm] = useState('');
+
+  const isPasswordMismatch =passwordConfirm.length > 0 && password !== passwordConfirm;
+
+
 
   const handleSelectBank = (name) => {
     setBank(name);
@@ -34,8 +39,10 @@ const Signup1 = () => {
         </div>
         <div className="input_container1">
             <input className="inputEmail"  placeholder="이메일을 입력하세요."/>
-            <input className='inputPassword1' type="password" placeholder="비밀번호를 입력하세요."/>
-            <input className='inputPassword2' type="password" placeholder='비밀번호를 한 번 더 입력하세요.'/>
+            <input className='inputPassword1' type="password" placeholder="비밀번호를 입력하세요." value={password} onChange={(e) => setPassword(e.target.value)}/>
+            <input className='inputPassword2' type="password" placeholder='비밀번호를 한 번 더 입력하세요.' value={passwordConfirm} onChange={(e) => setPasswordConfirm(e.target.value)}/>
+            {isPasswordMismatch && (<p className="password_error">비밀번호가 달라요.</p>)}
+
         </div>
         <div className="input_container2">
             <input className="inputNickname" type="text" placeholder='닉네임을 입력하세요.'/>
