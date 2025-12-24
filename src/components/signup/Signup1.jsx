@@ -1,8 +1,27 @@
 import React from 'react'
 import arrow from "../../assets/img/arrow.png"
 import "../../assets/sass/section/signup/signup1.scss"
+import { useState } from 'react';
+import { useRef } from 'react';
+
+const BANKS = [
+  "KB국민은행",
+  "신한은행",
+  "토스뱅크",
+  "카카오뱅크",
+  "기업은행",
+  "우리은행"
+];
 
 const Signup1 = () => {
+  const [bank, setBank] = useState('');
+  const [isBankOpen, setIsBankOpen] = useState(false);
+
+  const handleSelectBank = (name) => {
+    setBank(name);
+    setIsBankOpen(false); 
+  }
+  
   return (
     <div className='container signup'>
       <div className="header">
@@ -21,7 +40,30 @@ const Signup1 = () => {
         <div className="input_container2">
             <input className="inputNickname" type="text" placeholder='닉네임을 입력하세요.'/>
             <input className="inputAccount" type="text" placeholder='계좌번호를 입력하세요.'/>
-            <input className="inputBank" type="text" placeholder='은행을 선택하세요.'/>
+            <div className="bank_select">
+              <input
+                className="inputBank"
+                type="text"
+                placeholder='은행을 선택하세요.'
+                value={bank}
+                readOnly
+                onClick={() => setIsBankOpen(prev => !prev)}
+              />
+              {isBankOpen && (
+                <div className="bank_dropdown">
+                  {BANKS.map((b) => (
+                    <button
+                      key={b}
+                      type="button"
+                      className='bank_option'
+                      onClick={() => handleSelectBank(b)}
+                    >
+                      {b}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
         </div>
       </div>
     </div>
