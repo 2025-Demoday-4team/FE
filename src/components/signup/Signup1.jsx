@@ -12,6 +12,15 @@ const BANKS = [
   "우리은행"
 ];
 
+const BANK_CODE_MAP = {
+  "KB국민은행":"KB",
+  "신한은행":"SHINHAN",
+  "토스뱅크":"TOSS",
+  "카카오뱅크":"KAKAO",
+  "기업은행":"IBK",
+  "우리은행":"WOORI"
+};
+
 const Signup1 = () => {
   const [bank, setBank] = useState('');
   const [isBankOpen, setIsBankOpen] = useState(false);
