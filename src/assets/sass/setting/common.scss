@@ -1,33 +1,47 @@
+
+
 button,
 a {
-    cursor: pointer;
-    background-color: var(--none);
+  cursor: pointer;
+  background-color: var(--none);
 }
 
 body {
-    background-color: var(--black);
+  background-color: var(--black);
+  margin: 0;
+
+  display: flex;
+  justify-content: center;
 }
 
 .container {
-    overflow-x: hidden;
-    width: 100%;
-    margin: 0 auto;
-    background-color: var(--body);
-    min-width: 393px;
-    max-width: 420px;
-    height: 100vh;
-    min-height: 852px;
-    padding-top: 60px;
+  font-family: 'Overpass', sans-serif;
+  width: 100%;
+  min-width: 393px;
+  max-width: 420px;
+  height: 852px;
+
+  margin: 0 auto;
+  background-color: var(--body);
+
+  position: relative;     
+  overflow-y: auto;       
+  overflow-x: hidden;
+
+  padding-top: 60px;
+  padding-bottom: 69px;  
+  box-sizing: border-box;
 }
 
-::-webkit-scrollbar {
-    display: none;
+.container::-webkit-scrollbar {
+  display: none;
 }
+
 
 .none {
-    display: none !important;
+  display: none !important;
 }
 
 input {
-    outline: none;
+  outline: none;
 }
