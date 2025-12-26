@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import back from '../../assets/img/arrow.png'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios';
@@ -19,7 +19,11 @@ const Nickname = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get('http://solserver.store/api/v1/users/me');
+        const response = await axios.get('http://solserver.store/api/v1/users/me', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}` //로그인 토큰
+          }
+        });
         const userData = response.data.data;
         setNickname(userData.nickname);
         setLoading(false);
@@ -41,7 +45,7 @@ const Nickname = () => {
   const handleChange = (e) => {
     setNickname(e.target.value);
   };
-  const handleSave = async() => {
+  const handleSave = async () => {
     const msg = validateNickname(nickname);
     setError(msg);
     if (msg) return;

@@ -50,6 +50,10 @@ const AccountSetting = () => {
       await axios.patch('http://solserver.store/api/v1/users/me/bank-account', {
         bank: bank,
         accountNumber: accountNumber
+      }, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}` //로그인 토큰
+        }
       });
       alert("계좌 정보가 변경되었습니다.");
       setIsEditing(false);
