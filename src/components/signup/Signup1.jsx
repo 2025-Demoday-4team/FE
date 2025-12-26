@@ -2,6 +2,7 @@ import React from 'react'
 import arrow from "../../assets/img/arrow.png"
 import "../../assets/sass/section/signup/signup1.scss"
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const BANKS = [
   "KB국민은행",
@@ -22,6 +23,7 @@ const BANK_CODE_MAP = {
 };
 
 const Signup1 = () => {
+  const navigate = useNavigate();
   const [bank, setBank] = useState('');
   const [isBankOpen, setIsBankOpen] = useState(false);
   const [password, setPassword] = useState('');
@@ -29,28 +31,74 @@ const Signup1 = () => {
   const [email, setEmail] = useState('');
   const [nickname, setNickname] = useState('');
   const [account, setAccount] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [serverError, setServerError] = useState('');
 
   const isPasswordMismatch = passwordConfirm.length > 0 && password !== passwordConfirm;
 
   const isFormValid =
-    email &&
-    password &&
-    passwordConfirm &&
+    email.trim() &&
+    password.trim() &&
+    passwordConfirm.trim() &&
     !isPasswordMismatch &&
-    nickname &&
-    account &&
-    bank;
+    nickname.trim() &&
+    account.trim() &&
+    bank.trim();
 
 
   const handleSelectBank = (name) => {
     setBank(name);
     setIsBankOpen(false); 
   }
+
+  const handleSubmit = async() => {
+    if(!isFormValid || isSubmitting) return;
+
+    setIsSubmitting(true);
+    setServerError("");
+
+  // 백엔드 DTO에 맞추기 
+  const payload = {
+    email:email.trim(),
+    password,
+    passwordConfirm,
+    nickname:nickname.trim(),
+    bank:BANK_CODE_MAP[bank] ?? bank,
+    accountNumber : account.trim()
+  }
+
+  try{
+    const res = await fetch("http://solserver.store/api/v1/auth/signup",{
+      method:"POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+
+    })
+
+    if (!res.ok) {
+        // 서버가 message 내려주면 그걸 보여주기
+        let msg = "회원가입에 실패했어요.";
+        try {
+          const data = await res.json();
+          msg = data?.message || msg;
+        } catch {}
+        throw new Error(msg);
+      }
+
+      // 성공 처리
+      alert("회원가입이 완료됐어요!");
+      navigate("/login"); // 또는 navigate("/myfunding") 등 원하는 곳
+      } catch (err) {
+        setServerError(err.message || "오류가 발생했어요.");
+      } finally {
+        setIsSubmitting(false);
+      }
+  }
   
   return (
     <div className='container signup'>
       <div className="header">
-        <button className='arrow'><img src={arrow} alt="" /></button>
+        <button className='arrow' onClick={() => navigate(-1)}><img src={arrow} alt="" /></button>
       </div>
       <div className="main">
         <div className="text_container">
@@ -96,7 +144,8 @@ const Signup1 = () => {
       <div className="bottom">
         <button
         disabled={!isFormValid}
-       className={isFormValid ? 'active' : 'disabled'}
+        className={isFormValid ? 'active' : 'disabled'}
+        onClick={handleSubmit}
        >
         완료
         </button>
