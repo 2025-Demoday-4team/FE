@@ -1,0 +1,263 @@
+.container.newfunding_wrap {
+    height: 994px;
+    padding-top: 65px;
+}
+
+.newfunding_wrap {
+    background-color: white;
+    padding: 0px 36px;
+    display: flex;
+    flex-direction: column;
+
+    .header {
+        display: flex;
+        flex-direction: column;
+        gap: 21px;
+
+        h1 {
+            font-size: 22px;
+            color: black;
+            font-weight: 600;
+        }
+
+        p {
+            font-size: 12px;
+            color: #433F3F;
+        }
+    }
+
+    .main {
+        margin-top: 35px;
+        display: flex;
+        flex-direction: column;
+        gap: 33px;
+
+        .top {
+            display: flex;
+            position: relative;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 309px;
+            height: 248px;
+            position: relative;
+            border: 1px solid #C2C2C2;
+            border-radius: 20px;
+            box-sizing: border-box;
+            overflow: hidden;
+            cursor: pointer;
+
+            img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+            .placeholder {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 16px;
+
+                #camera {
+                    width: 34px;
+                    height: 28px;
+                }
+
+                p {
+                    font-size: 12px;
+                    font-weight: 600;
+                    color: #433F3F;
+                }
+            }
+
+            input {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                opacity: 0;
+                cursor: pointer;
+                z-index: 10;
+            }
+        }
+
+        .bottom {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            #box2 {
+                display: flex;
+                flex-direction: column;
+                position: relative;
+                margin-top: 24px;
+                height: 97px;
+
+                p {
+                    position: absolute;
+                    bottom: 0px;
+                    right: 0px;
+                    margin-top: 4px;
+                    font-size: 12px;
+                    font-weight: 600;
+                    color: #433F3F;
+                }
+            }
+
+            #box3 {
+                margin-top: 27px;
+            }
+
+            .box {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+
+                h2 {
+                    font-size: 18px;
+                    color: #433F3F;
+                    font-weight: 600;
+                }
+
+                input {
+                    width: 309px;
+                    height: 47px;
+                    box-sizing: border-box;
+                    border: 1px solid #C2C2C2;
+                    border-radius: 20px;
+                    padding: 19px 25px;
+                }
+            }
+
+        }
+
+        button {
+            margin-top: 63px;
+            width: 309px;
+            height: 58px;
+            border-radius: 10px;
+            background-color: var(--gray01);
+            color: white;
+            text-align: center;
+
+            &.active {
+                background-color: var(--red01);
+                color: #fff;
+            }
+        }
+    }
+}
+
+.supportfunding_wrap {
+    background-color: white;
+    padding: 0px 36px;
+    display: flex;
+    flex-direction: column;
+
+    .header {
+        display: flex;
+        flex-direction: column;
+        gap: 21px;
+
+        h1 {
+            font-size: 22px;
+            color: black;
+            font-weight: 600;
+        }
+
+        p {
+            font-size: 12px;
+            color: #433F3F;
+        }
+    }
+
+    .main {
+        margin-top: 64px;
+        display: flex;
+        flex-direction: column;
+        gap: 31px;
+        align-items: center;
+
+        #box2 {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            height: 97px;
+
+            p {
+                position: absolute;
+                bottom: 0px;
+                right: 0px;
+                margin-top: 4px;
+                font-size: 12px;
+                font-weight: 600;
+                color: #433F3F;
+            }
+        }
+
+        .box {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+
+            h2 {
+                font-size: 18px;
+                color: #433F3F;
+                font-weight: 600;
+            }
+
+            input {
+                width: 309px;
+                height: 47px;
+                box-sizing: border-box;
+                border: 1px solid #C2C2C2;
+                border-radius: 20px;
+                padding: 19px 25px;
+            }
+        }
+
+        .guset_message {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+
+            h2 {
+                font-size: 18px;
+                color: #433F3F;
+                font-weight: 600;
+            }
+            p{
+                font-size: 12px;
+                color: #433F3F;
+                font-weight: 600;
+            }
+            textarea{
+                margin-top: 6px;
+                width: 309px;
+                height: 168px;
+                box-sizing: border-box;
+                border: 1px solid #C2C2C2;
+                border-radius: 20px;
+                padding: 19px 25px;
+            }
+        }
+
+        button {
+            margin-top: 48px;
+            width: 309px;
+            height: 58px;
+            border-radius: 10px;
+            background-color: var(--gray01);
+            color: white;
+            text-align: center;
+
+            &.active {
+                background-color: var(--red01);
+                color: #fff;
+            }
+        }
+    }
+
+}

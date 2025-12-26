@@ -6,21 +6,24 @@ import FundingGuest from './components/mainhome/FundingGuest'
 import Mypage from './components/mypage/MypageSetting';
 import NicknameSetting from './components/mypage/Nickname';
 import AccountSetting from './components/mypage/BankAccount';
-
+import NewFunding from './components/mainhome/NewFunding';
+import SupportFunding from './components/mainhome/SupportFunding';
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/mypage" replace />} />
+      <Route path="/" element={<Navigate to="/newfunding" replace />} />
 
       <Route path="/myfunding" element={<MyFunding />} />
       <Route path="/myfunding/completed" element={<MyFundingCompleted />} />
       <Route path="/funding/:id" element={<FundingDetail />} />
       <Route path="/funding/guest" element={<FundingGuest />} />
-    
+
+      <Route path="/newfunding" element={<NewFunding />} />
+      <Route path="/supportfunding" element={<SupportFunding />} />
       <Route path="/mypage" element={<Mypage />} />
       <Route path="/mypage/nickname" element={<NicknameSetting />} />
       <Route path="/mypage/account" element={<AccountSetting />} />
-    
+
     </Routes>
   );
 }
