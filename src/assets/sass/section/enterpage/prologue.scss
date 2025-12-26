@@ -1,0 +1,82 @@
+.container.prologue{
+    background-color: #fff;
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .top{
+        margin-bottom:70px;
+
+        p{
+            font-size:15px;
+            font-weight:500;
+            margin-bottom:20px;
+        }
+
+        .button_container{
+            display:flex;
+            flex-direction: column;
+            gap:20px;
+
+            .signupButton{
+                border-radius:10px;
+                border: 1px solid #C2C2C2;
+                display:flex;
+                flex-direction: column;
+                align-items: flex-start;
+                width:287px;
+                height:93px;
+                justify-content: center;
+                padding-left:20px;
+
+                .title{
+                    font-size:19px;
+                    font-weight:400;
+                }
+
+                .subtitle{
+                    font-size:11px;
+                    margin:0;
+                }
+                
+            }
+            .loginButton{
+                border-radius:10px;
+                border: 1px solid #C2C2C2;
+                display:flex;
+                flex-direction: column;
+                align-items: flex-start;
+                width:287px;
+                font-size:19px;
+                font-weight:400;
+                height:58px;
+                justify-content: center;
+                padding-left:20px;
+            }
+        }
+    }
+
+    .bottom{
+        p{
+            font-size:15px;
+            font-weight:500;
+            margin-bottom:20px;
+        }
+        .button_container2{
+            button{
+                border: 1px solid #C2C2C2;
+                border-radius:10px;
+                display:flex;
+                flex-direction: column;
+                align-items: flex-start;
+                width:287px;
+                font-size:19px;
+                font-weight:400;
+                height:58px;
+                justify-content: center;
+                padding-left:20px;
+            }
+        }
+    }
+}
