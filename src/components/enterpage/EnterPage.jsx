@@ -10,7 +10,7 @@ const EnterPage = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigate("/prologue");
+      navigate("/login");
     },2000);
 
     return () => clearTimeout(timer);
