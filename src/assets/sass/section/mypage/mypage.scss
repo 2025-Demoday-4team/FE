@@ -1,0 +1,273 @@
+.mypage_wrap {
+    background-color: white;
+
+    .header {
+        padding: 51px 0px 0px 36px;
+        height: 103px;
+        border-bottom: 1px solid var(--gray01);
+
+        h1 {
+            font-size: 22px;
+            font-weight: 600;
+        }
+    }
+
+    .main {
+        margin-top: 37px;
+
+        .bank_balance {
+            width: 345px;
+            height: 76px;
+            border-radius: 20px;
+            box-sizing: border-box;
+            border: 1px solid var(--gray01);
+            margin-left: 24px;
+            display: flex;
+            flex-direction: column;
+            padding: 14px 34px 26px 26px;
+            position: relative;
+
+            #my_balance {
+                font-size: 12px;
+                font-weight: 400;
+            }
+
+            #num {
+                font-size: 19px;
+                font-weight: 600;
+                position: absolute;
+                bottom: 26px;
+                right: 34px;
+            }
+        }
+
+        #p1,
+        #p2,
+        #logout,
+        #leave {
+            font-size: 14px;
+            margin-left: 36px;
+
+        }
+
+        .top {
+            margin-top: 45px;
+        }
+
+        .top,
+        .mid {
+            display: flex;
+            flex-direction: column;
+
+            #p1 {
+                display: block;
+                position: relative;
+                padding-bottom: 11px;
+
+                &::after {
+                    content: '';
+                    position: absolute;
+                    left: -36px;
+                    right: 0;
+                    bottom: 0;
+                    height: 1px;
+                    background-color: var(--gray01);
+                }
+            }
+
+            #p2 {
+                margin-top: 24px;
+                cursor: pointer;
+            }
+        }
+
+        .mid {
+            margin-top: 64px;
+
+            .pushalarm {
+                display: flex;
+                width: 100%;
+                justify-content: space-between;
+                align-items: center;
+
+                .toggle_switch {
+                    margin-right: 24px;
+                    margin-top: 24px;
+                }
+            }
+        }
+
+        .bottom {
+            margin-top: 58px;
+            border-top: 1px solid var(--gray01);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+
+            #logout {
+                margin-top: 24px;
+                cursor: pointer;
+            }
+
+            #leave {
+                color: #FF0000;
+            }
+        }
+    }
+}
+
+.container.bank_wrap {
+    padding-top: 0;
+}
+
+.bank_wrap {
+    background-color: white;
+
+    .header {
+        display: flex;
+        flex-direction: column;
+        height: 163px;
+        padding: 37px 0px 0px 29px;
+        gap: 51px;
+        border-bottom: 1px solid var(--gray01);
+
+        img {
+            width: 12px;
+            height: 23px;
+            cursor: pointer;
+        }
+
+        h1 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-left: 7px;
+        }
+    }
+
+    .main {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 54px;
+        gap: 15px;
+
+        .box1 {
+            width: 287px;
+            height: 58px;
+            border-radius: 10px;
+            padding: 18px 19px;
+            box-sizing: border-box;
+            border: 0.5px solid #C2C2C2;
+
+            #account_num {
+                width: 100%;
+                font-size: 19px;
+            }
+
+        }
+
+        input::placeholder {
+            color: #433f3f;
+        }
+
+        .box {
+            width: 287px;
+            height: 58px;
+            border-radius: 10px;
+            box-sizing: border-box;
+            padding: 18px 19px;
+            border: 0.5px solid #C2C2C2;
+            display: flex;
+            align-items: center;
+
+            select {
+                color: #433f3f;
+                border: none;
+                width: 100%;
+                font-size: 19px;
+            }
+        }
+
+        button {
+            width: 287px;
+            height: 58px;
+            border-radius: 10px;
+            box-sizing: border-box;
+            background-color: var(--gray01);
+            color: white;
+            text-align: center;
+            font-size: 19px;
+            transition: background-color 0.3s ease;
+
+            &.active {
+                background-color: var(--red01);
+                color: #fff;
+            }
+        }
+    }
+}
+
+.container.nickname_wrap {
+    padding-top: 0;
+}
+
+.nickname_wrap {
+    background-color: white;
+
+    .header {
+        display: flex;
+        flex-direction: column;
+        height: 163px;
+        padding: 37px 0px 0px 29px;
+        gap: 51px;
+        border-bottom: 1px solid var(--gray01);
+
+        img {
+            width: 12px;
+            height: 23px;
+            cursor: pointer;
+        }
+
+        h1 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-left: 7px;
+        }
+    }
+
+    .main {
+        display: flex;
+        flex-direction: column;
+        gap: 27px;
+        align-items: center;
+
+        .box {
+            width: 287px;
+            height: 58px;
+            border-radius: 10px;
+            box-sizing: border-box;
+            padding: 18px 19px;
+            border: 0.5px solid #C2C2C2;
+            display: flex;
+            align-items: center;
+            margin-top: 51px;
+        }
+
+        button {
+            width: 287px;
+            height: 58px;
+            border-radius: 10px;
+            box-sizing: border-box;
+            background-color: var(--gray01);
+            color: white;
+            text-align: center;
+            font-size: 19px;
+            transition: background-color 0.3s ease;
+
+            &.active {
+                background-color: var(--red01);
+                color: #fff;
+            }
+        }
+    }
+}
