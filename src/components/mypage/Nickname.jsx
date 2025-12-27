@@ -53,7 +53,11 @@ const Nickname = () => {
     console.log("백엔드로 보낼 최종 데이터:", nickname);
 
     try {
-      await axios.patch('http://solserver.store/api/v1/users/me/nickname', { nickname: nickname });
+      await axios.patch('http://solserver.store/api/v1/users/me/nickname', { nickname: nickname }, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}` //로그인 토큰
+        }
+      });
       alert("닉네임이 변경되었습니다.");
       setIsEditing(false);
     } catch (error) {

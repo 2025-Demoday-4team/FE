@@ -118,7 +118,6 @@ const MyFunding = () => {
 
         const root = res?.data;
 
-        // 가능한 응답 형태들 모두 대응
         const data =
           root?.data?.data ??
           root?.data?.content ??
@@ -126,6 +125,7 @@ const MyFunding = () => {
           root?.content ??
           root ??
           [];
+          console.log("서버 데이터:", data);
 
         setItems(Array.isArray(data) ? data : []);
       } catch (e) {
@@ -194,7 +194,6 @@ const MyFunding = () => {
               <div className="mf_con_var_fill" style={{ width: `${item.percent}%` }} />
             </div>
 
-            
           </div>
         ))}
       </div>

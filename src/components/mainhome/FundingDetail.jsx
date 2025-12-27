@@ -4,7 +4,7 @@ import fd_img from "../../assets/img/fundingdetail.png";
 import download from "../../assets/img/download.svg";
 import modal from "../../assets/img/modal.svg";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
 
@@ -44,25 +44,27 @@ const toPercent = (rate) => {
 
 const FundingDetail = () => {
   const params = useParams();
+  const navigate = useNavigate();
 
-  // ✅ 라우트가 /funding/:id 인 경우도 대응
   const fundingId = params.fundingId ?? params.id;
 
-  const [open, setOpen] = useState(true);
+  const handleShareLink = () => {
+    const shareLink = `${window.location.origin}/fundings/${fundingId}`;
+    alert("공유 링크: " +shareLink);
+  }
+
+  const [open, setOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [funding, setFunding] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [stopping, setStopping] = useState(false);
 
   const pct = useMemo(() => (funding ? toPercent(funding.achievementRate) : 0), [funding]);
   const isCompleted = pct >= 100;
 
   useEffect(() => {
-    console.log("[FundingDetail] params:", params);
-    console.log("[FundingDetail] fundingId:", fundingId);
-
     if (!fundingId) {
-      // ✅ fundingId 없으면 로딩 끄고 안내 화면으로
       setFunding(null);
       setLoading(false);
       return;
@@ -72,21 +74,9 @@ const FundingDetail = () => {
       try {
         setLoading(true);
 
-        const url = `/v1/fundings/${fundingId}`;
-        console.log("[FundingDetail] GET:", getBaseURL() + url);
-
-        const res = await api.get(url);
-        console.log("[FundingDetail] res.status:", res?.status);
-        console.log("[FundingDetail] res.data:", res?.data);
-
+        const res = await api.get(`/v1/fundings/${fundingId}`);
         const root = res?.data;
-
-        // ✅ swagger: { success, code, message, data: {...} }
-        // ✅ 혹시 서버가 { data: { data: {...}} } 형태로 주는 경우도 방어
         const data = root?.data?.data ?? root?.data ?? null;
-
-        console.log("[FundingDetail] root.success:", root?.success);
-        console.log("[FundingDetail] parsed data:", data);
 
         if (!root?.success || !data) {
           setFunding(null);
@@ -95,8 +85,6 @@ const FundingDetail = () => {
 
         setFunding(data);
       } catch (e) {
-        console.error("[FundingDetail] load error:", e);
-        console.error("[FundingDetail] error.response:", e?.response);
         setFunding(null);
       } finally {
         setLoading(false);
@@ -105,6 +93,30 @@ const FundingDetail = () => {
 
     fetchFundingDetail();
   }, [fundingId]);
+
+  const stopFunding = async () => {
+    if (!fundingId || stopping) return;
+
+    try {
+      setStopping(true);
+
+      const res = await api.post(`/v1/fundings/${fundingId}/stop`, {
+        reason: "사용자 요청 중단"
+      });
+
+      const root = res?.data;
+      const ok = root?.success === true || res?.status === 200;
+
+      if (!ok) throw new Error("stop failed");
+
+      setIsModalOpen(false);
+      navigate("/myfunding/completed", { replace: true });
+    } catch (e) {
+      alert("펀딩 중단에 실패했어요.");
+    } finally {
+      setStopping(false);
+    }
+  };
 
   const title = funding?.title || "펀딩 상세";
   const ownerNickname = funding?.ownerNickname || "익명";
@@ -118,11 +130,12 @@ const FundingDetail = () => {
   const contributions = Array.isArray(funding?.contributions) ? funding.contributions : [];
 
   const heroImg =
-    funding?.giftImgUrl && String(funding.giftImgUrl).trim() !== "" && funding.giftImgUrl !== "string"
+    funding?.giftImgUrl &&
+      String(funding.giftImgUrl).trim() !== "" &&
+      funding.giftImgUrl !== "string"
       ? funding.giftImgUrl
       : fd_img;
 
-  // ✅ 검은 화면 원천 차단: 로딩/에러도 동일 class + 흰 배경 + 글자색 지정
   if (loading) {
     return (
       <div
@@ -159,7 +172,13 @@ const FundingDetail = () => {
           <h1>{title}</h1>
         </div>
 
-        <button className="download_btn" type="button">
+        <button className="back_btn" type="button" onClick={() => navigate("/myfunding")}>
+          <span className="back_icon" aria-hidden="true">
+            ‹
+          </span>
+        </button>
+
+        <button className="download_btn" type="button" onClick={handleShareLink}>
           <img src={download} alt="down" className="download" />
         </button>
       </div>
@@ -167,7 +186,6 @@ const FundingDetail = () => {
       <div className={`fd_sheet ${open ? "open" : ""}`} onClick={() => setOpen((v) => !v)}>
         {!open && (
           <div className="sheet_handle" style={{ textAlign: "center", padding: "10px" }}>
-            상세보기
           </div>
         )}
 
@@ -218,6 +236,7 @@ const FundingDetail = () => {
               className="fd_stop_btn"
               type="button"
               onClick={() => (isCompleted ? alert("정산") : setIsModalOpen(true))}
+              disabled={stopping}
             >
               {isCompleted ? "펀딩 정산하기" : "펀딩 중단하기"}
             </button>
@@ -226,7 +245,7 @@ const FundingDetail = () => {
       </div>
 
       {isModalOpen && (
-        <div className="fd_modal_backdrop" onClick={() => setIsModalOpen(false)}>
+        <div className="fd_modal_backdrop" onClick={() => (stopping ? null : setIsModalOpen(false))}>
           <div className="fd_modal" onClick={(e) => e.stopPropagation()}>
             <div className="modal_img">
               <img src={modal} alt="modal" />
@@ -236,7 +255,7 @@ const FundingDetail = () => {
               <br />
               그래도 중단하시겠어요?
             </p>
-            <button className="fd_modal_btn" type="button" onClick={() => setIsModalOpen(false)}>
+            <button className="fd_modal_btn" type="button" onClick={stopFunding} disabled={stopping}>
               네, 중단할래요.
             </button>
           </div>
