@@ -1,35 +1,55 @@
 import React, { useState } from 'react'
 import '../../assets/sass/section/mainhome/newfunding.scss'
+import { useNavigate, useParams } from 'react-router-dom';
+import axios from 'axios';
+
+const getBaseURL = () => {
+    const host = window.location.hostname;
+    const isLocal = host === "localhost" || host === "127.0.0.1";
+    return isLocal ? "/api" : "http://solserver.store/api";
+};
 
 const SupportFunding = () => {
+
+    const navigate = useNavigate();
+    const {fundingId} = useParams();
+
     const [guestNickname, setgusetNickname] = useState('');
     const [amount, setAmount] = useState('');
     const [message, setMessage] = useState('');
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     const isValid = guestNickname.trim() !== '' && amount >= 10000 && message.trim() !== '';
 
     const handleSubmit = async () => {
-        if (!isValid) {
+        if (!isValid || loading) {
             alert('모든 정보를 입력해주세요. (금액은 10,000원 이상부터 가능)');
             return;
         }
         console.log("전송 데이터:", { guestNickname, amount, message });
-        alert("펀딩에 성공하셨습니다. (테스트 모드)");
-        /*
-        try {
-            await axios.post('여기에 api주소 넣기!!', {
-                guestNickname: guestNickname,
-                amount: amount,
-                message: message
-            });
-            alert("펀딩에 성공하셨습니다.");
-        } catch (error) {
+        
+        setLoading(true);
+
+        try{
+            await axios.post(
+                `${getBaseURL()}/v1/fundings/${fundingId}/contributions`,
+                {
+                    guestNickname,
+                    amount : Number(amount),
+                    message,
+                }
+            );
+
+            alert("펀딩에 성공하셨습니다!");
+
+            navigate(`/fundings/${fundingId}`);
+        } catch(error){
+            console.error("펀딩 실패", error);
             alert("펀딩에 실패했습니다.");
+        } finally{
+            setLoading(false);
         }
-            */
     };
-    /*if (loading) return <div>로딩중...</div>;*/
 
     return (
         <div className="container supportfunding_wrap">
@@ -52,7 +72,7 @@ const SupportFunding = () => {
                     <p>전달한 메시지는 펀딩 내역에서 볼 수 있어요.</p>
                     <textarea value={message} onChange={(e) => setMessage(e.target.value)} />
                 </div>
-                <button onClick={handleSubmit} className={isValid ? 'active' : ''}>완료</button>
+                <button onClick={handleSubmit} disabled = {loading} className={isValid ? 'active' : ''}>완료</button>
             </div>
         </div>
     )
