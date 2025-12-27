@@ -20,7 +20,7 @@ const Mypage = () => {
           }
         });
         const userData = response.data.data;
-        setBalance(userData.balance);
+        setBalance(Number(userData.balance));
         setLoading(false);
       }
       catch (error) {
