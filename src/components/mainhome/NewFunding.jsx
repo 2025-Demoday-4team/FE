@@ -44,7 +44,7 @@ const NewFunding = () => {
                     'Authorization': `Bearer ${localStorage.getItem('accessToken')}` //로그인 토큰
                 }
             });
-            if (response.status === 200) {
+            if (response.status >= 200 && response.status < 300) {
                 alert('펀딩이 생성되었습니다.');
                 navigate('/myfunding');
             }

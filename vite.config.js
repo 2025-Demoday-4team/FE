@@ -6,7 +6,8 @@ export default defineConfig({
   plugins: [react(), svgr()],
   server: {
     proxy: {
-      '/api': 'https://solserver.store',
+      '/api': 'http://solserver.store',
     },
   },
 });
+v
