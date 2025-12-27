@@ -16,7 +16,7 @@ import Signup1 from "./components/signup/Signup1";
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/newfunding" replace />} />
+      <Route path="/" element={<Navigate to="/enterpage" replace />} />
 
       <Route path="/myfunding" element={<MyFunding />} />
       <Route path="/myfunding/completed" element={<MyFundingCompleted />} />
@@ -24,7 +24,7 @@ function App() {
       <Route path="/funding/guest" element={<FundingGuest />} />
 
       <Route path="/newfunding" element={<NewFunding />} />
-      <Route path="/supportfunding" element={<SupportFunding />} />
+      <Route path="/fundings/:fundingId" element={<SupportFunding />} />
       <Route path="/mypage" element={<Mypage />} />
       <Route path="/mypage/nickname" element={<NicknameSetting />} />
       <Route path="/mypage/account" element={<AccountSetting />} />
