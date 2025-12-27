@@ -29,8 +29,8 @@ const NewFunding = () => {
         const formData = new FormData();
         formData.append('giftImage', imageFile);
         formData.append('title', title);
-        formData.append('targetAmount', targetAmount);
-        formData.append('deadlineAt', deadlineAt);
+        formData.append('targetAmount', Number(targetAmount));
+        formData.append('deadlineAt', `${deadlineAt}T00:00:00`);
 
         if (!isValid) {
             alert('모든 정보를 입력해주세요. (금액은 10,000원 이상부터 가능)');
