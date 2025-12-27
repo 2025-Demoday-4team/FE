@@ -29,8 +29,8 @@ const NewFunding = () => {
         const formData = new FormData();
         formData.append('giftImage', imageFile);
         formData.append('title', title);
-        formData.append('targetAmount', targetAmount);
-        formData.append('deadlineAt', deadlineAt);
+        formData.append('targetAmount', Number(targetAmount));
+        formData.append('deadlineAt', `${deadlineAt}T00:00:00`);
 
         if (!isValid) {
             alert('모든 정보를 입력해주세요. (금액은 10,000원 이상부터 가능)');
@@ -44,7 +44,7 @@ const NewFunding = () => {
                     'Authorization': `Bearer ${localStorage.getItem('accessToken')}` //로그인 토큰
                 }
             });
-            if (response.status === 200) {
+            if (response.status >= 200 && response.status < 300) {
                 alert('펀딩이 생성되었습니다.');
                 navigate('/myfunding');
             }
