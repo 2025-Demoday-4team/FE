@@ -1,7 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../../assets/sass/section/mainhome/fundingdetail.scss";
 import fd_img from "../../assets/img/fundingdetail.png";
 import download from "../../assets/img/download.svg";
+import axios from "axios";
+import { useNavigate, useParams } from "react-router-dom";
+
+const getBaseURL = () => {
+  const host = window.location.hostname;
+  const isLocal = host === "localhost" || host === "127.0.0.1";
+  // 로컬에서는 vite proxy(/api) 쓰고, 배포에선 서버 직접 호출
+  return isLocal ? "/api" : "http://solserver.store/api";
+};
+
+const api = axios.create({
+  baseURL: getBaseURL(),
+});
+
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("accessToken");
+  if (token) {
+    config.headers = config.headers || {};
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
+
 
 const FundingGuest = () => {
   const [open, setOpen] = useState(false);

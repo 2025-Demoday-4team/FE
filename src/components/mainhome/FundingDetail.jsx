@@ -1,20 +1,20 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
 import "../../assets/sass/section/mainhome/fundingdetail.scss";
 import fd_img from "../../assets/img/fundingdetail.png";
 import download from "../../assets/img/download.svg";
 import modal from "../../assets/img/modal.svg";
 import axios from "axios";
+import { useParams } from "react-router-dom";
+
+const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
 
 const getBaseURL = () => {
   const host = window.location.hostname;
   const isLocal = host === "localhost" || host === "127.0.0.1";
-  return isLocal ? "/api" : "https://solserver.store/api";
+  return isLocal ? "/api" : "http://solserver.store/api";
 };
 
-const api = axios.create({
-  baseURL: getBaseURL(),
-});
+const api = axios.create({ baseURL: getBaseURL() });
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("accessToken");
@@ -25,146 +25,158 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-api.interceptors.response.use(
-  (res) => res,
-  (err) => Promise.reject(err)
-);
+const formatDate = (iso) => {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "";
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}. ${m}. ${day}`;
+};
 
-const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
+const toPercent = (rate) => {
+  if (typeof rate !== "number") return 0;
+  // swagger 예시 0.1 -> 10%
+  const pct = rate <= 1 ? Math.round(rate * 100) : Math.round(rate);
+  return clamp(pct, 0, 100);
+};
 
 const FundingDetail = () => {
-  const { fundingId } = useParams();
+  const params = useParams();
 
-  const [open, setOpen] = useState(false);
+  // ✅ 라우트가 /funding/:id 인 경우도 대응
+  const fundingId = params.fundingId ?? params.id;
+
+  const [open, setOpen] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [funding, setFunding] = useState(null);
-  const [progress, setProgress] = useState(0);
+  const [loading, setLoading] = useState(true);
 
-  const BLUR_PX = 12;
-
-  const pct = useMemo(() => clamp(progress, 0, 100), [progress]);
+  const pct = useMemo(() => (funding ? toPercent(funding.achievementRate) : 0), [funding]);
   const isCompleted = pct >= 100;
 
-  const toggleSheet = () => setOpen((v) => !v);
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
-
   useEffect(() => {
-    if (!fundingId) return;
+    console.log("[FundingDetail] params:", params);
+    console.log("[FundingDetail] fundingId:", fundingId);
 
-    const fetchFunding = async () => {
+    if (!fundingId) {
+      // ✅ fundingId 없으면 로딩 끄고 안내 화면으로
+      setFunding(null);
+      setLoading(false);
+      return;
+    }
+
+    const fetchFundingDetail = async () => {
       try {
-        const res = await api.get(`/v1/fundings/${fundingId}`);
+        setLoading(true);
+
+        const url = `/v1/fundings/${fundingId}`;
+        console.log("[FundingDetail] GET:", getBaseURL() + url);
+
+        const res = await api.get(url);
+        console.log("[FundingDetail] res.status:", res?.status);
+        console.log("[FundingDetail] res.data:", res?.data);
 
         const root = res?.data;
-        const data = root?.data?.data ?? root?.data ?? root;
-        const successFlag = typeof root?.success === "boolean" ? root.success : true;
 
-        if (!successFlag || !data) return;
+        // ✅ swagger: { success, code, message, data: {...} }
+        // ✅ 혹시 서버가 { data: { data: {...}} } 형태로 주는 경우도 방어
+        const data = root?.data?.data ?? root?.data ?? null;
+
+        console.log("[FundingDetail] root.success:", root?.success);
+        console.log("[FundingDetail] parsed data:", data);
+
+        if (!root?.success || !data) {
+          setFunding(null);
+          return;
+        }
 
         setFunding(data);
-
-        let rate = 0;
-        if (typeof data.achievementRate === "number") {
-          rate = data.achievementRate <= 1 ? Math.round(data.achievementRate * 100) : Math.round(data.achievementRate);
-        }
-        setProgress(rate);
       } catch (e) {
+        console.error("[FundingDetail] load error:", e);
+        console.error("[FundingDetail] error.response:", e?.response);
         setFunding(null);
-        setProgress(0);
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchFunding();
+    fetchFundingDetail();
   }, [fundingId]);
 
-  useEffect(() => {
-    if (!isModalOpen) return;
+  const title = funding?.title || "펀딩 상세";
+  const ownerNickname = funding?.ownerNickname || "익명";
+  const createdAt = formatDate(funding?.createdAt);
 
-    const onKeyDown = (e) => {
-      if (e.key === "Escape") closeModal();
-    };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [isModalOpen]);
+  const remainingAmount =
+    typeof funding?.remainingAmount === "number" ? funding.remainingAmount.toLocaleString() : "0";
 
-  const handlePayout = async () => {
-    try {
-      const res = await api.post(`/v1/fundings/${fundingId}/payout`);
-      if (res.data?.success) alert(res.data?.message || "정산 완료");
-      else alert(res.data?.message || "정산 실패");
-    } catch (err) {
-      const msg = err?.response?.data?.message || err?.message || "정산 중 오류가 발생했습니다.";
-      alert(msg);
-    }
-  };
-
-  const handlePrimaryAction = () => {
-    if (isCompleted) {
-      handlePayout();
-      return;
-    }
-    openModal();
-  };
-
-  const handleConfirmStop = async () => {
-    try {
-      const payload = { reason: "사용자 요청" };
-      const res = await api.post(`/v1/fundings/${fundingId}/stop`, payload);
-      if (res.data?.success) alert(res.data?.message || "펀딩 중단 완료");
-      else alert(res.data?.message || "펀딩 중단 실패");
-    } catch (err) {
-      const msg = err?.response?.data?.message || err?.message || "펀딩 중단 중 오류가 발생했습니다.";
-      alert(msg);
-    } finally {
-      setIsModalOpen(false);
-    }
-  };
-
-  const title = funding?.title || "펀딩";
-  const ownerNickname = funding?.ownerNickname || "";
-  const createdAt = funding?.createdAt ? String(funding.createdAt).slice(0, 10).replaceAll("-", ". ") : "";
-
-  const remainingAmount = typeof funding?.remainingAmount === "number" ? funding.remainingAmount : 0;
   const remainingDays = typeof funding?.remainingDays === "number" ? funding.remainingDays : 0;
 
   const contributions = Array.isArray(funding?.contributions) ? funding.contributions : [];
 
   const heroImg =
-    funding?.giftImgUrl ||
-    funding?.giftImageUrl ||
-    funding?.imageUrl ||
-    fd_img;
+    funding?.giftImgUrl && String(funding.giftImgUrl).trim() !== "" && funding.giftImgUrl !== "string"
+      ? funding.giftImgUrl
+      : fd_img;
+
+  // ✅ 검은 화면 원천 차단: 로딩/에러도 동일 class + 흰 배경 + 글자색 지정
+  if (loading) {
+    return (
+      <div
+        className="container fundingdetail_wrap no-padding"
+        style={{ background: "#fff", color: "#111", height: "852px" }}
+      >
+        <div style={{ padding: 20 }}>데이터를 불러오는 중...</div>
+      </div>
+    );
+  }
+
+  if (!funding) {
+    return (
+      <div
+        className="container fundingdetail_wrap no-padding"
+        style={{ background: "#fff", color: "#111", height: "852px" }}
+      >
+        <div style={{ padding: 20 }}>
+          펀딩 정보를 불러올 수 없습니다.
+          <div style={{ marginTop: 10, fontSize: 12 }}>
+            콘솔에서 [FundingDetail] params / fundingId / res.data 로그를 확인해줘.
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={`container fundingdetail_wrap no-padding ${open ? "is-open" : ""}`}>
       <div className="fd_bg">
-        <img
-          src={heroImg}
-          alt=""
-          style={{
-            filter: `blur(${BLUR_PX}px)`,
-            transform: "scale(1.05)",
-          }}
-        />
+        <img src={heroImg} alt="배경" />
 
         <div className="fd_title">
           <h1>{title}</h1>
         </div>
 
         <button className="download_btn" type="button">
-          <img src={download} alt="" className="download" />
+          <img src={download} alt="down" className="download" />
         </button>
       </div>
 
-      <div className={`fd_sheet ${open ? "open" : ""}`} onClick={toggleSheet}>
+      <div className={`fd_sheet ${open ? "open" : ""}`} onClick={() => setOpen((v) => !v)}>
+        {!open && (
+          <div className="sheet_handle" style={{ textAlign: "center", padding: "10px" }}>
+            상세보기
+          </div>
+        )}
+
         {open && (
           <div className="sheet_content" onClick={(e) => e.stopPropagation()}>
             <div className="fd_toprow">
               <div className="fd_meta">
-                <p className="fd_owner">{ownerNickname ? `${ownerNickname}님의 펀딩` : "펀딩"}</p>
-                <p className="fd_date">{createdAt ? `펀딩 개설일 : ${createdAt}` : ""}</p>
+                <p className="fd_owner">{ownerNickname}님의 펀딩</p>
+                <p className="fd_date">펀딩 개설일 : {createdAt}</p>
               </div>
               <p className="fd_percent">{pct}%</p>
             </div>
@@ -185,18 +197,28 @@ const FundingDetail = () => {
             <p className="fd_section_title">펀딩 내역</p>
 
             <div className="fd_list">
-              {contributions.map((c) => (
-                <div className="fd_item" key={c.id}>
-                  <div className="left">
-                    <p className="name">{c.guestNickname}</p>
-                    <p className="msg">{c.message}</p>
+              {contributions.length === 0 ? (
+                <p>아직 참여 내역이 없어요.</p>
+              ) : (
+                contributions.map((c) => (
+                  <div className="fd_item" key={c.id}>
+                    <div className="left">
+                      <p className="name">{c.guestNickname}</p>
+                      <p className="msg">{c.message}</p>
+                    </div>
+                    <p className="money">
+                      {typeof c.amount === "number" ? c.amount.toLocaleString() : c.amount}원
+                    </p>
                   </div>
-                  <p className="money">{c.amount}원</p>
-                </div>
-              ))}
+                ))
+              )}
             </div>
 
-            <button className="fd_stop_btn" type="button" onClick={handlePrimaryAction}>
+            <button
+              className="fd_stop_btn"
+              type="button"
+              onClick={() => (isCompleted ? alert("정산") : setIsModalOpen(true))}
+            >
               {isCompleted ? "펀딩 정산하기" : "펀딩 중단하기"}
             </button>
           </div>
@@ -204,20 +226,18 @@ const FundingDetail = () => {
       </div>
 
       {isModalOpen && (
-        <div className="fd_modal_backdrop" onClick={closeModal}>
+        <div className="fd_modal_backdrop" onClick={() => setIsModalOpen(false)}>
           <div className="fd_modal" onClick={(e) => e.stopPropagation()}>
-            <div className="fd_modal_icon" />
             <div className="modal_img">
-              <img src={modal} alt="" />
+              <img src={modal} alt="modal" />
             </div>
             <p className="fd_modal_text">
               아직 펀딩이 완료되지 않았어요.
               <br />
-              그래도 펀딩을 중단하시겠어요?
+              그래도 중단하시겠어요?
             </p>
-
-            <button className="fd_modal_btn" type="button" onClick={handleConfirmStop}>
-              네, 펀딩을 중단할래요.
+            <button className="fd_modal_btn" type="button" onClick={() => setIsModalOpen(false)}>
+              네, 중단할래요.
             </button>
           </div>
         </div>
@@ -227,6 +247,3 @@ const FundingDetail = () => {
 };
 
 export default FundingDetail;
-
-
-

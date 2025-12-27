@@ -61,7 +61,7 @@ const Login = () => {
         console.error("토큰 파싱 에러:", e);
       }
 
-      navigate("/");
+      navigate("/myfunding");
     } catch (err) {
       setServerError(err.message || "오류가 발생했어요.");
     } finally {
