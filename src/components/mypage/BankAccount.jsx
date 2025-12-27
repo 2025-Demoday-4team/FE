@@ -19,7 +19,11 @@ const AccountSetting = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get('http://solserver.store/api/v1/users/me');
+        const response = await axios.get('http://solserver.store/api/v1/users/me', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}` //로그인 토큰
+          }
+        });
         const userData = response.data.data;
         setAccountNumber(userData.accountNumber);
         setBank(userData.bank);
