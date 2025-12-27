@@ -44,6 +44,28 @@ const Mypage = () => {
     navigate('/login');
   }
 
+  const handleDeleteAccount = async () => {
+    if (!window.confirm("정말로 탈퇴하시겠습니까?")) {
+      return;
+    }
+
+    try {
+      const response = await axios.delete('http://solserver.store/api/v1/users/me', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+        }
+      });
+
+      if (response.status >= 200 && response.status < 300) {
+        alert("회원 탈퇴가 완료되었습니다.");
+        localStorage.removeItem('accessToken');
+        navigate('/');
+      }
+    } catch (error) {
+      console.error("회원 탈퇴 실패:", error);
+      alert("탈퇴 오류 발생");
+    }
+  }
 
   const [isToggled, setIsToggled] = useState(false);
   const handleToggle = () => {
@@ -77,7 +99,7 @@ const Mypage = () => {
         </div>
         <div className="bottom">
           <p id='logout' onClick={handleLogout}>로그아웃</p>
-          <p id='leave'>회원 탈퇴</p>
+          <p id='leave' onClick={handleDeleteAccount}>회원 탈퇴</p>
         </div>
       </div>
       <Nav />
