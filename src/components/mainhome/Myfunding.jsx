@@ -114,8 +114,6 @@ const MyFunding = () => {
             <div className="mf_con_var">
               <div className="mf_con_var_fill" style={{ width: `${item.percent}%` }} />
             </div>
-
-            <p className="mf_remaining_amount">남은 금액 : {item.remainingAmount}원</p>
           </div>
         ))}
       </div>
