@@ -13,12 +13,45 @@
     }
 
     .main {
-        margin-top: 64px;
+        margin-top: 37px;
 
-        p {
+        .bank_balance {
+            width: 345px;
+            height: 76px;
+            border-radius: 20px;
+            box-sizing: border-box;
+            border: 1px solid var(--gray01);
+            margin-left: 24px;
+            display: flex;
+            flex-direction: column;
+            padding: 14px 34px 26px 26px;
+            position: relative;
+
+            #my_balance {
+                font-size: 12px;
+                font-weight: 400;
+            }
+
+            #num {
+                font-size: 19px;
+                font-weight: 600;
+                position: absolute;
+                bottom: 26px;
+                right: 34px;
+            }
+        }
+
+        #p1,
+        #p2,
+        #logout,
+        #leave {
             font-size: 14px;
             margin-left: 36px;
-            cursor: pointer;
+
+        }
+
+        .top {
+            margin-top: 45px;
         }
 
         .top,
@@ -44,6 +77,7 @@
 
             #p2 {
                 margin-top: 24px;
+                cursor: pointer;
             }
         }
 
@@ -55,7 +89,8 @@
                 width: 100%;
                 justify-content: space-between;
                 align-items: center;
-                .toggle_switch{
+
+                .toggle_switch {
                     margin-right: 24px;
                     margin-top: 24px;
                 }
@@ -123,7 +158,11 @@
             padding: 18px 19px;
             box-sizing: border-box;
             border: 0.5px solid #C2C2C2;
-            #account_num{width: 100%;font-size: 19px;}
+
+            #account_num {
+                width: 100%;
+                font-size: 19px;
+            }
 
         }
 

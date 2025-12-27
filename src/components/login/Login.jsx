@@ -15,43 +15,55 @@ const Login = () => {
 
   const isFormValid = email.trim() && password.trim();
 
-  const handleLogin = async() => {
-    if(!isFormValid || isSubmitting) return;
+  const handleLogin = async () => {
+    if (!isFormValid || isSubmitting) return;
 
     setIsSubmitting(true);
     setServerError('');
 
     const payload = {
-      email : email.trim(),
+      email: email.trim(),
       password,
     };
 
-    try{
-      const res = await fetch("http://solserver.store/api/v1/auth/login",{
-        method:"POST",
-        headers:{"Content-Type" : "application/json"},
-        body:JSON.stringify(payload),
+    try {
+      const res = await fetch("http://solserver.store/api/v1/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
       });
 
       let dataText = "";
-      try{
+      try {
         dataText = await res.text();
-      } catch {}
+      } catch { }
 
-      if(!res.ok){
+      if (!res.ok) {
         let msg = "로그인에 실패했어요.";
-        try{
+        try {
           const json = JSON.parse(dataText);
-          msg = json?.message||msg;
-        } catch{
-          if(dataText) msg = dataText;
-        } 
+          msg = json?.message || msg;
+        } catch {
+          if (dataText) msg = dataText;
+        }
         throw new Error(msg);
+      }
+//여기 수정함
+      try {
+        const json = JSON.parse(dataText);
+        const token = json.data?.accessToken || json.accessToken;
+
+        if (token) {
+          localStorage.setItem('accessToken', token); 
+          console.log("로그인 성공! 토큰이 저장되었습니다.");
+        }
+      } catch (e) {
+        console.error("토큰 파싱 에러:", e);
       }
 
       navigate("/");
-    } catch(err){
-      setServerError(err.message || "오류가 발생했어요.")
+    } catch (err) {
+      setServerError(err.message || "오류가 발생했어요.");
     } finally {
       setIsSubmitting(false);
     }
@@ -64,12 +76,12 @@ const Login = () => {
       <div className="middle">
         <img className="logo" src={Logo} alt="" />
         <div className="input_container">
-            <input type="text"  placeholder='이메일' value = {email} onChange={(e)=> setEmail(e.target.value)}/>
-            <input type="text" placeholder='비밀번호' value = {password} onChange={(e) => setPassword(e.target.value)}/>
+          <input type="text" placeholder='이메일' value={email} onChange={(e) => setEmail(e.target.value)} />
+          <input type="text" placeholder='비밀번호' value={password} onChange={(e) => setPassword(e.target.value)} />
         </div>
         <div className="button_container">
-            <button className='login_button' disabled={!isFormValid || isSubmitting} onClick={handleLogin}>로그인</button>
-            <button className='signup_button' onClick={() => navigate('/signup')}>회원가입하기</button>
+          <button className='login_button' disabled={!isFormValid || isSubmitting} onClick={handleLogin}>로그인</button>
+          <button className='signup_button' onClick={() => navigate('/signup')}>회원가입하기</button>
         </div>
       </div>
     </div>
