@@ -125,6 +125,7 @@ const MyFunding = () => {
           root?.content ??
           root ??
           [];
+          console.log("서버 데이터:", data);
 
         setItems(Array.isArray(data) ? data : []);
       } catch (e) {

@@ -1,11 +1,14 @@
 import React, { useState } from 'react'
 import '../../assets/sass/section/mainhome/newfunding.scss'
+import { useParams} from "react-router-dom";
+import axios from 'axios';
 
 const SupportFunding = () => {
+    const {fundingId} = useParams();
     const [guestNickname, setgusetNickname] = useState('');
     const [amount, setAmount] = useState('');
     const [message, setMessage] = useState('');
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     const isValid = guestNickname.trim() !== '' && amount >= 10000 && message.trim() !== '';
 
@@ -14,22 +17,20 @@ const SupportFunding = () => {
             alert('모든 정보를 입력해주세요. (금액은 10,000원 이상부터 가능)');
             return;
         }
-        console.log("전송 데이터:", { guestNickname, amount, message });
-        alert("펀딩에 성공하셨습니다. (테스트 모드)");
-        /*
+        
         try {
-            await axios.post('여기에 api주소 넣기!!', {
+            await axios.post(`/api/v1/fundings/${fundingId}/contributions`, {
                 guestNickname: guestNickname,
-                amount: amount,
+                amount: Number(amount),
                 message: message
             });
             alert("펀딩에 성공하셨습니다.");
         } catch (error) {
             alert("펀딩에 실패했습니다.");
         }
-            */
+            
     };
-    /*if (loading) return <div>로딩중...</div>;*/
+    if (loading) return <div>로딩중...</div>;
 
     return (
         <div className="container supportfunding_wrap">

@@ -47,6 +47,11 @@ const FundingDetail = () => {
 
   const fundingId = params.fundingId ?? params.id;
 
+  const handleShareLink = () => {
+    const shareLink = `${window.location.origin}/fundings/${fundingId}`;
+    alert("공유 링크: " +shareLink);
+  }
+
   const [open, setOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -97,7 +102,7 @@ const FundingDetail = () => {
       const res = await api.post(`/v1/fundings/${fundingId}/stop`, {
         reason: "사용자 요청 중단"
       });
-      
+
       const root = res?.data;
       const ok = root?.success === true || res?.status === 200;
 
@@ -125,8 +130,8 @@ const FundingDetail = () => {
 
   const heroImg =
     funding?.giftImgUrl &&
-    String(funding.giftImgUrl).trim() !== "" &&
-    funding.giftImgUrl !== "string"
+      String(funding.giftImgUrl).trim() !== "" &&
+      funding.giftImgUrl !== "string"
       ? funding.giftImgUrl
       : fd_img;
 
@@ -172,7 +177,7 @@ const FundingDetail = () => {
           </span>
         </button>
 
-        <button className="download_btn" type="button">
+        <button className="download_btn" type="button" onClick={handleShareLink}>
           <img src={download} alt="down" className="download" />
         </button>
       </div>
@@ -180,7 +185,7 @@ const FundingDetail = () => {
       <div className={`fd_sheet ${open ? "open" : ""}`} onClick={() => setOpen((v) => !v)}>
         {!open && (
           <div className="sheet_handle" style={{ textAlign: "center", padding: "10px" }}>
-            
+
           </div>
         )}
 
