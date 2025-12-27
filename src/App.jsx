@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import MyFunding from "./components/mainhome/MyFunding";
+import MyFunding from "./components/mainhome/Myfunding";
 import MyFundingCompleted from "./components/mainhome/MyFundingCompleted";
 import FundingDetail from "./components/mainhome/FundingDetail";
 import FundingGuest from './components/mainhome/FundingGuest'
