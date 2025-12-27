@@ -23,12 +23,86 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-api.interceptors.response.use(
-  (res) => res,
-  (err) => Promise.reject(err)
-);
-
 const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
+
+const toNumber = (v, fallback = 0) => {
+  const n = typeof v === "number" ? v : Number(v);
+  return Number.isFinite(n) ? n : fallback;
+};
+
+const parseDateOnly = (isoLike) => {
+  if (!isoLike) return null;
+  const s = String(isoLike);
+  const datePart = s.includes("T") ? s.split("T")[0] : s;
+  const d = new Date(`${datePart}T00:00:00`);
+  return Number.isNaN(d.getTime()) ? null : d;
+};
+
+const calcRemainingDaysFromDeadline = (deadlineIso) => {
+  const d = parseDateOnly(deadlineIso);
+  if (!d) return null;
+
+  const today = new Date();
+  const t0 = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  const diffMs = d.getTime() - t0.getTime();
+  const days = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+  return Number.isFinite(days) ? Math.max(0, days) : null;
+};
+
+const calcPercent = (f) => {
+  const rawRate =
+    typeof f.achievementRate === "number"
+      ? f.achievementRate
+      : typeof f.achievement_rate === "number"
+        ? f.achievement_rate
+        : null;
+
+  if (rawRate !== null) {
+    const pct =
+      rawRate <= 1
+        ? Math.round(rawRate * 100)
+        : Math.round(rawRate);
+    return clamp(pct, 0, 100);
+  }
+
+  const current = toNumber(f.currentAmount ?? f.current_amount ?? f.raisedAmount ?? f.raised_amount, 0);
+  const target = toNumber(f.targetAmount ?? f.target_amount, 0);
+  if (target <= 0) return 0;
+
+  return clamp(Math.round((current / target) * 100), 0, 100);
+};
+
+const calcRemainingAmount = (f) => {
+  const ra =
+    typeof f.remainingAmount === "number"
+      ? f.remainingAmount
+      : typeof f.remaining_amount === "number"
+        ? f.remaining_amount
+        : null;
+
+  if (ra !== null) return Math.max(0, Math.round(ra));
+
+  const current = toNumber(f.currentAmount ?? f.current_amount ?? f.raisedAmount ?? f.raised_amount, 0);
+  const target = toNumber(f.targetAmount ?? f.target_amount, 0);
+  return Math.max(0, Math.round(target - current));
+};
+
+const calcDday = (f) => {
+  const remainingDays =
+    typeof f.remainingDays === "number"
+      ? f.remainingDays
+      : typeof f.remaining_days === "number"
+        ? f.remaining_days
+        : null;
+
+  if (remainingDays !== null) return `D-${Math.max(0, remainingDays)}`;
+
+  const deadline =
+    f.deadlineAt ?? f.deadline_at ?? f.deadline ?? f.endAt ?? f.end_at ?? null;
+
+  const days = calcRemainingDaysFromDeadline(deadline);
+  return days === null ? "" : `D-${days}`;
+};
 
 const MyFunding = () => {
   const navigate = useNavigate();
@@ -43,15 +117,18 @@ const MyFunding = () => {
         });
 
         const root = res?.data;
-        const data = root?.data?.data ?? root?.data ?? [];
-        const list = Array.isArray(data) ? data : [];
-        setItems(list);
+
+        // 가능한 응답 형태들 모두 대응
+        const data =
+          root?.data?.data ??
+          root?.data?.content ??
+          root?.data ??
+          root?.content ??
+          root ??
+          [];
+
+        setItems(Array.isArray(data) ? data : []);
       } catch (e) {
-        console.log("🔥 myfunding error", e);
-        console.log("status:", e?.response?.status);
-        console.log("data:", e?.response?.data);
-        console.log("url:", e?.config?.baseURL + e?.config?.url);
-        console.log("params:", e?.config?.params);
         setItems([]);
       }
     };
@@ -61,23 +138,16 @@ const MyFunding = () => {
 
   const mapped = useMemo(() => {
     return items.map((f) => {
-      const rawRate = typeof f.achievementRate === "number" ? f.achievementRate : 0;
-      const percent =
-        rawRate <= 1 ? clamp(Math.round(rawRate * 100), 0, 100) : clamp(Math.round(rawRate), 0, 100);
-
-      const remainingDays = typeof f.remainingDays === "number" ? f.remainingDays : null;
-      const dday = remainingDays !== null ? `D-${remainingDays}` : "";
-
-      const remainingAmount = typeof f.remainingAmount === "number" ? f.remainingAmount : 0;
+      const id = f.id ?? f.fundingId ?? f.funding_id ?? f.fundId ?? f.fund_id;
 
       return {
-        id: f.id,
+        id,
         title: f.title || "펀딩",
-        percent,
-        dday,
-        remainingAmount,
+        percent: calcPercent(f),
+        dday: calcDday(f),
+        remainingAmount: calcRemainingAmount(f),
       };
-    });
+    }).filter((x) => x.id !== undefined && x.id !== null);
   }, [items]);
 
   return (
@@ -99,7 +169,16 @@ const MyFunding = () => {
 
       <div className="mf_content">
         {mapped.map((item) => (
-          <div key={item.id} className="mf_product" onClick={() => navigate(`/funding/${item.id}`)}>
+          <div
+            key={item.id}
+            className="mf_product"
+            onClick={() => navigate(`/funding/${item.id}`)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") navigate(`/funding/${item.id}`);
+            }}
+          >
             <div className="mf_con">
               <div className="mf_con_left">
                 <p>{item.title}</p>
@@ -114,6 +193,8 @@ const MyFunding = () => {
             <div className="mf_con_var">
               <div className="mf_con_var_fill" style={{ width: `${item.percent}%` }} />
             </div>
+
+            
           </div>
         ))}
       </div>
