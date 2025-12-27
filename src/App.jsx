@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import MyFunding from "./components/mainhome/Myfunding";
+import MyFunding from "./components/mainhome/MyFunding";
 import MyFundingCompleted from "./components/mainhome/MyFundingCompleted";
 import FundingDetail from "./components/mainhome/FundingDetail";
 import FundingGuest from './components/mainhome/FundingGuest'
@@ -21,10 +21,10 @@ function App() {
       <Route path="/myfunding" element={<MyFunding />} />
       <Route path="/myfunding/completed" element={<MyFundingCompleted />} />
       <Route path="/funding/:id" element={<FundingDetail />} />
-      <Route path="/funding/guest" element={<FundingGuest />} />
+      <Route path="/fundings/:fundingId" element={<FundingGuest />} />
 
       <Route path="/newfunding" element={<NewFunding />} />
-      <Route path="/fundings/:fundingId" element={<SupportFunding />} />
+      <Route path="/supportfunding/:fundingId" element={<SupportFunding />} />
       <Route path="/mypage" element={<Mypage />} />
       <Route path="/mypage/nickname" element={<NicknameSetting />} />
       <Route path="/mypage/account" element={<AccountSetting />} />
