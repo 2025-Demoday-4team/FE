@@ -35,6 +35,7 @@ const formatDate = (iso) => {
   return `${y}. ${m}. ${day}`;
 };
 
+// ✅ 순수 함수로 원복 (Hook 절대 금지)
 const toPercent = (rate) => {
   if (typeof rate !== "number") return 0;
   const pct = rate <= 1 ? Math.round(rate * 100) : Math.round(rate);
@@ -49,8 +50,8 @@ const FundingDetail = () => {
 
   const handleShareLink = () => {
     const shareLink = `${window.location.origin}/fundings/${fundingId}`;
-    alert("공유 링크: " +shareLink);
-  }
+    alert("공유 링크: " + shareLink);
+  };
 
   const [open, setOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -59,8 +60,15 @@ const FundingDetail = () => {
   const [loading, setLoading] = useState(true);
   const [stopping, setStopping] = useState(false);
 
+  // ✅ 퍼센트
   const pct = useMemo(() => (funding ? toPercent(funding.achievementRate) : 0), [funding]);
   const isCompleted = pct >= 100;
+
+  // ✅ 블러(px): 0% -> 20px, 100% -> 0px
+  const MAX_BLUR_PX = 20;
+  const blurPx = useMemo(() => {
+    return (MAX_BLUR_PX * (1 - pct / 100)).toFixed(2);
+  }, [pct]);
 
   useEffect(() => {
     if (!fundingId) {
@@ -100,7 +108,7 @@ const FundingDetail = () => {
       setStopping(true);
 
       const res = await api.post(`/v1/fundings/${fundingId}/stop`, {
-        reason: "사용자 요청 중단"
+        reason: "사용자 요청 중단",
       });
 
       const root = res?.data;
@@ -130,17 +138,14 @@ const FundingDetail = () => {
 
   const heroImg =
     funding?.giftImgUrl &&
-      String(funding.giftImgUrl).trim() !== "" &&
-      funding.giftImgUrl !== "string"
+    String(funding.giftImgUrl).trim() !== "" &&
+    funding.giftImgUrl !== "string"
       ? funding.giftImgUrl
       : fd_img;
 
   if (loading) {
     return (
-      <div
-        className="container fundingdetail_wrap no-padding"
-        style={{ background: "#fff", color: "#111", height: "852px" }}
-      >
+      <div className="container fundingdetail_wrap no-padding" style={{ background: "#fff", color: "#111", height: "852px" }}>
         <div style={{ padding: 20 }}>데이터를 불러오는 중...</div>
       </div>
     );
@@ -148,15 +153,9 @@ const FundingDetail = () => {
 
   if (!funding) {
     return (
-      <div
-        className="container fundingdetail_wrap no-padding"
-        style={{ background: "#fff", color: "#111", height: "852px" }}
-      >
+      <div className="container fundingdetail_wrap no-padding" style={{ background: "#fff", color: "#111", height: "852px" }}>
         <div style={{ padding: 20 }}>
           펀딩 정보를 불러올 수 없습니다.
-          <div style={{ marginTop: 10, fontSize: 12 }}>
-            콘솔에서 [FundingDetail] params / fundingId / res.data 로그를 확인해줘.
-          </div>
         </div>
       </div>
     );
@@ -165,16 +164,22 @@ const FundingDetail = () => {
   return (
     <div className={`container fundingdetail_wrap no-padding ${open ? "is-open" : ""}`}>
       <div className="fd_bg">
-        <img src={heroImg} alt="배경" />
+        <img
+          src={heroImg}
+          alt="배경"
+          style={{
+            filter: `blur(${blurPx}px)`,
+            transition: "filter 300ms ease",
+            transform: "scale(1.05)",
+          }}
+        />
 
         <div className="fd_title">
           <h1>{title}</h1>
         </div>
 
         <button className="back_btn" type="button" onClick={() => navigate("/myfunding")}>
-          <span className="back_icon" aria-hidden="true">
-            ‹
-          </span>
+          <span className="back_icon" aria-hidden="true">‹</span>
         </button>
 
         <button className="download_btn" type="button" onClick={handleShareLink}>
@@ -183,12 +188,6 @@ const FundingDetail = () => {
       </div>
 
       <div className={`fd_sheet ${open ? "open" : ""}`} onClick={() => setOpen((v) => !v)}>
-        {!open && (
-          <div className="sheet_handle" style={{ textAlign: "center", padding: "10px" }}>
-
-          </div>
-        )}
-
         {open && (
           <div className="sheet_content" onClick={(e) => e.stopPropagation()}>
             <div className="fd_toprow">
@@ -207,9 +206,7 @@ const FundingDetail = () => {
 
             <div className="fd_summary_box">
               <p>남은 금액 : {remainingAmount}원</p>
-              <p>
-                언박싱까지 D-{remainingDays}, {Math.max(0, 100 - pct)}% 남았어요!
-              </p>
+              <p>언박싱까지 D-{remainingDays}, {Math.max(0, 100 - pct)}% 남았어요!</p>
             </div>
 
             <p className="fd_section_title">펀딩 내역</p>
