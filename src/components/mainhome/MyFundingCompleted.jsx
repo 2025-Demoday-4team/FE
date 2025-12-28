@@ -9,7 +9,7 @@ const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
 const getBaseURL = () => {
   const host = window.location.hostname;
   const isLocal = host === "localhost" || host === "127.0.0.1";
-  return isLocal ? "/api" : "http://solserver.store/api";
+  return isLocal ? "/api" : "https://solserver.store/api";
 };
 
 const api = axios.create({ baseURL: getBaseURL() });

@@ -19,7 +19,7 @@ const Nickname = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get('http://solserver.store/api/v1/users/me', {
+        const response = await axios.get('https://solserver.store/api/v1/users/me', {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('accessToken')}` //로그인 토큰
           }
@@ -53,7 +53,7 @@ const Nickname = () => {
     console.log("백엔드로 보낼 최종 데이터:", nickname);
 
     try {
-      await axios.patch('http://solserver.store/api/v1/users/me/nickname', { nickname: nickname }, {
+      await axios.patch('https://solserver.store/api/v1/users/me/nickname', { nickname: nickname }, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('accessToken')}` //로그인 토큰
         }

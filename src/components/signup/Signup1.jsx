@@ -68,7 +68,7 @@ const Signup1 = () => {
   }
 
   try{
-    const res = await fetch("http://solserver.store/api/v1/auth/signup",{
+    const res = await fetch("https://solserver.store/api/v1/auth/signup",{
       method:"POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),

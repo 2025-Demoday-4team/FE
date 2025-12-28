@@ -38,7 +38,7 @@ const NewFunding = () => {
         }
 
         try {
-            const response = await axios.post('http://solserver.store/api/v1/fundings', formData, {
+            const response = await axios.post('https://solserver.store/api/v1/fundings', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data', //이미지 전송 
                     'Authorization': `Bearer ${localStorage.getItem('accessToken')}` //로그인 토큰
