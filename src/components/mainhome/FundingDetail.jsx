@@ -125,6 +125,30 @@ const FundingDetail = () => {
     }
   };
 
+  const payoutFunding = async () => {
+    if (!fundingId || stopping) return;
+
+    try {
+      setStopping(true);
+
+      const res = await api.post(`/v1/fundings/${fundingId}/payout`);
+
+      const root = res?.data;
+      const ok = root?.success === true || res?.status === 200;
+
+      if (!ok) throw new Error("payout failed");
+
+      alert("정산이 완료되었습니다.");
+      navigate("/myfunding/completed", { replace: true });
+    } catch (e) {
+      console.error(e);
+      alert("정산 처리에 실패했어요.");
+    } finally {
+      setStopping(false);
+    }
+  };
+
+
   const title = funding?.title || "펀딩 상세";
   const ownerNickname = funding?.ownerNickname || "익명";
   const createdAt = formatDate(funding?.createdAt);
@@ -232,7 +256,7 @@ const FundingDetail = () => {
             <button
               className="fd_stop_btn"
               type="button"
-              onClick={() => (isCompleted ? alert("정산") : setIsModalOpen(true))}
+              onClick={() => (isCompleted ? payoutFunding() : setIsModalOpen(true))}
               disabled={stopping}
             >
               {isCompleted ? "펀딩 정산하기" : "펀딩 중단하기"}
