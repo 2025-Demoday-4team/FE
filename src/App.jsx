@@ -20,8 +20,8 @@ function App() {
 
       <Route path="/myfunding" element={<MyFunding />} />
       <Route path="/myfunding/completed" element={<MyFundingCompleted />} />
-      <Route path="/fundings/:fundingId" element={<FundingDetail />} />
-      <Route path="/funding/guest" element={<FundingGuest />} />
+      <Route path="/funding/:id" element={<FundingDetail />} />
+      <Route path="/fundings/:fundingId" element={<FundingGuest />} />
 
       <Route path="/newfunding" element={<NewFunding />} />
       <Route path="/supportfunding/:fundingId" element={<SupportFunding />} />
